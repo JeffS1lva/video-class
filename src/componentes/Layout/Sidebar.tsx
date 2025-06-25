@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { ChatTab } from "../ModulesClass/ChatTab";
+import { ChatTab } from "../ModulesClass/Chat/ChatTab";
 import { LessonsTab } from "../ModulesClass/LessonsTab";
 import { TabHeader } from "../ModulesClass/TabHeader";
 import type { Module, VideoLesson, Comment } from "../types/interface";
