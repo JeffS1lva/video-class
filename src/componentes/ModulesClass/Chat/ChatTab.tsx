@@ -76,6 +76,33 @@ export const ChatTab = ({
     }
   });
 
+  // Função auxiliar para remover um comentário de forma recursiva
+  const removeCommentRecursively = (commentsList: Comment[], targetId: number): Comment[] => {
+    return commentsList
+      .filter(comment => comment.id !== targetId) // Remove se for o comentário principal
+      .map(comment => ({
+        ...comment,
+        replies: comment.replies ? removeCommentRecursively(comment.replies, targetId) : []
+      }));
+  };
+
+  // Função auxiliar para atualizar um comentário de forma recursiva
+  const updateCommentRecursively = (
+    commentsList: Comment[], 
+    targetId: number, 
+    updateFn: (comment: Comment) => Comment
+  ): Comment[] => {
+    return commentsList.map(comment => {
+      if (comment.id === targetId) {
+        return updateFn(comment);
+      }
+      return {
+        ...comment,
+        replies: comment.replies ? updateCommentRecursively(comment.replies, targetId, updateFn) : []
+      };
+    });
+  };
+
   // Funções de interação
   const handleReply = (commentId: number) => {
     setReplyingTo(commentId);
@@ -86,28 +113,25 @@ export const ChatTab = ({
   };
 
   const handlePin = (commentId: number) => {
-    setComments((prev: any[]) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? { ...comment, isPinned: !comment.isPinned }
-          : comment
-      )
+    setComments(prevComments => 
+      updateCommentRecursively(prevComments, commentId, (comment) => ({
+        ...comment,
+        isPinned: !comment.isPinned
+      }))
     );
   };
 
   const handleDelete = (commentId: number) => {
-    setComments((prev: any[]) =>
-      prev.filter((comment) => comment.id !== commentId)
-    );
+    setComments(prevComments => removeCommentRecursively(prevComments, commentId));
   };
 
   const handleEdit = (commentId: number, newMessage: string) => {
-    setComments((prev: any[]) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? { ...comment, message: newMessage, isEdited: true }
-          : comment
-      )
+    setComments(prevComments => 
+      updateCommentRecursively(prevComments, commentId, (comment) => ({
+        ...comment,
+        message: newMessage,
+        isEdited: true
+      }))
     );
   };
 
@@ -125,23 +149,18 @@ export const ChatTab = ({
       };
 
       if (replyingTo) {
-        setComments((prev: any[]) =>
-          prev.map((comment) => {
-            if (comment.id === replyingTo) {
-              return {
-                ...comment,
-                replies: [
-                  ...(comment.replies || []),
-                  { ...newCommentObj, id: Date.now() + 1 },
-                ],
-              };
-            }
-            return comment;
-          })
+        setComments(prevComments =>
+          updateCommentRecursively(prevComments, replyingTo, (comment) => ({
+            ...comment,
+            replies: [
+              ...(comment.replies || []),
+              { ...newCommentObj, id: Date.now() + Math.random() },
+            ]
+          }))
         );
         setReplyingTo(null);
       } else {
-        setComments((prev: any) => [...prev, newCommentObj]);
+        setComments(prevComments => [...prevComments, newCommentObj]);
       }
 
       onAddComment();
@@ -174,7 +193,6 @@ export const ChatTab = ({
         `}</style>
 
         {/* Status indicators */}
-
         {filteredComments.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-400">
             <MessageCircle className="w-12 h-12 mb-4 opacity-50" />

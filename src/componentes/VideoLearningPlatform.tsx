@@ -89,7 +89,7 @@ const VideoLearningPlatform = () => {
       ]
     }
   ]);
-
+  
   const [currentLesson, setCurrentLesson] = useState<VideoLesson>(modules[0].lessons[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -114,7 +114,7 @@ const VideoLearningPlatform = () => {
   const [completedLessons, setCompletedLessons] = useState<Set<number>>(new Set());
   const [activeTab, setActiveTab] = useState<'lessons' | 'chat'>('lessons');
   const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -145,7 +145,7 @@ const VideoLearningPlatform = () => {
   const handleVideoEnd = () => {
     setIsPlaying(false);
     setCompletedLessons(prev => new Set(prev).add(currentLesson.id));
-    
+
     // Desbloquear próxima aula
     const allLessons = modules.flatMap(m => m.lessons);
     const nextLessonIndex = allLessons.findIndex(l => l.id === currentLesson.id) + 1;
@@ -197,7 +197,7 @@ const VideoLearningPlatform = () => {
     if (scrollContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
       const isScrolled = scrollTop > 10 || scrollHeight > clientHeight + 20;
-      
+
       if (isScrolled) {
         scrollContainerRef.current.classList.add('scrolled');
       } else {
@@ -302,10 +302,10 @@ const VideoLearningPlatform = () => {
 
       {/* Container Principal com Layout Flex - altura fixa */}
       <div className="flex flex-1 overflow-hidden">
-        
+
         {/* Seção do Player de Vídeo - Ocupa a maior parte da tela com scroll personalizado */}
         <div className="flex-1 relative">
-          <div 
+          <div
             ref={scrollContainerRef}
             className="invisible-scrollbar scroll-fade-container h-full overflow-y-auto p-5"
             onScroll={handleScroll}
@@ -328,7 +328,7 @@ const VideoLearningPlatform = () => {
         </div>
 
         {/* Seção da Sidebar - Largura fixa à direita, altura fixa sem scroll */}
-        <div className="w-96 flex-shrink-0 p-6 pl-3 flex flex-col h-full">
+        <div className="w-2/9 flex-shrink-0 p-6 pl-3 flex flex-col h-full">
           <Sidebar
             activeTab={activeTab}
             modules={modules}
