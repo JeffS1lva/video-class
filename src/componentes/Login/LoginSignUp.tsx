@@ -34,7 +34,8 @@ export function LoginSignupScreen() {
   const API_URLS = [
     "http://localhost:3001/api",
     "http://127.0.0.1:3001/api",
-    "http://localhost:3000/api", // caso esteja em porta diferente
+    "http://localhost:3000/api",
+    "https://video-class-backend.vercel.app/api", // caso esteja em porta diferente
   ];
 
   const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
