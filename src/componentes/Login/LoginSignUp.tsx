@@ -12,8 +12,6 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
-  Wifi,
-  WifiOff,
 } from "lucide-react";
 
 export function LoginSignupScreen() {
@@ -21,8 +19,7 @@ export function LoginSignupScreen() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
-  const [connectionError, setConnectionError] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -30,13 +27,8 @@ export function LoginSignupScreen() {
     confirmPassword: "",
   });
 
-  // URLs da API com fallback
-  const API_URLS = [
-    "http://localhost:3001/api",
-    "http://127.0.0.1:3001/api",
-    "http://localhost:3000/api",
-    "https://video-class-backend.vercel.app/api", // caso esteja em porta diferente
-  ];
+  // URL da sua API - ajuste conforme necessário
+  const API_URL = 'http://localhost:3001/api';
 
   const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
     setFormData({
@@ -45,113 +37,65 @@ export function LoginSignupScreen() {
     });
     // Limpar mensagem ao digitar
     if (message.text) {
-      setMessage({ type: "", text: "" });
-    }
-    if (connectionError) {
-      setConnectionError(false);
+      setMessage({ type: '', text: '' });
     }
   };
 
   const validateForm = () => {
     if (!formData.email || !formData.password) {
-      setMessage({ type: "error", text: "Email e senha são obrigatórios" });
+      setMessage({ type: 'error', text: 'Email e senha são obrigatórios' });
       return false;
     }
 
     if (!isLogin) {
       if (!formData.name) {
-        setMessage({ type: "error", text: "Nome é obrigatório" });
+        setMessage({ type: 'error', text: 'Nome é obrigatório' });
         return false;
       }
       if (!formData.confirmPassword) {
-        setMessage({
-          type: "error",
-          text: "Confirmação de senha é obrigatória",
-        });
+        setMessage({ type: 'error', text: 'Confirmação de senha é obrigatória' });
         return false;
       }
       if (formData.password !== formData.confirmPassword) {
-        setMessage({ type: "error", text: "As senhas não coincidem" });
+        setMessage({ type: 'error', text: 'As senhas não coincidem' });
         return false;
       }
       if (formData.password.length < 6) {
-        setMessage({
-          type: "error",
-          text: "A senha deve ter pelo menos 6 caracteres",
-        });
+        setMessage({ type: 'error', text: 'A senha deve ter pelo menos 6 caracteres' });
         return false;
       }
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setMessage({ type: "error", text: "Email inválido" });
+      setMessage({ type: 'error', text: 'Email inválido' });
       return false;
     }
 
     return true;
   };
 
-  const checkServerStatus = async () => {
-    for (const baseUrl of API_URLS) {
-      try {
-        const response = await fetch(`${baseUrl.replace("/api", "")}/health`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (response.ok) {
-          console.log(`✅ Servidor encontrado em: ${baseUrl}`);
-          return baseUrl;
-        }
-      } catch (error) {
-        console.log(`❌ Servidor não encontrado em: ${baseUrl}`);
-      }
-    }
-    return null;
-  };
-
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    setMessage({ type: "", text: "" });
-    setConnectionError(false);
+    setMessage({ type: '', text: '' });
 
     try {
-      // Verificar qual URL do servidor está funcionando
-      const workingApiUrl = await checkServerStatus();
-
-      if (!workingApiUrl) {
-        setConnectionError(true);
-        setMessage({
-          type: "error",
-          text: "Servidor não encontrado. Verifique se o backend está rodando na porta 3001.",
-        });
-        setLoading(false);
-        return;
-      }
-
-      const endpoint = isLogin ? "/login" : "/register";
-      const payload = isLogin
+      const endpoint = isLogin ? '/login' : '/register';
+      const payload = isLogin 
         ? { email: formData.email, password: formData.password }
-        : {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            confirmPassword: formData.confirmPassword,
+        : { 
+            name: formData.name, 
+            email: formData.email, 
+            password: formData.password, 
+            confirmPassword: formData.confirmPassword 
           };
 
-      console.log(
-        `Enviando ${
-          isLogin ? "login" : "registro"
-        } para: ${workingApiUrl}${endpoint}`
-      );
-
-      const response = await fetch(`${workingApiUrl}${endpoint}`, {
-        method: "POST",
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
@@ -160,25 +104,22 @@ export function LoginSignupScreen() {
 
       if (response.ok) {
         // Sucesso
-        setMessage({
-          type: "success",
-          text: isLogin
-            ? "Login realizado com sucesso!"
-            : "Cadastro realizado com sucesso!",
+        setMessage({ 
+          type: 'success', 
+          text: isLogin ? 'Login realizado com sucesso!' : 'Cadastro realizado com sucesso!' 
         });
-
+        
         // Salvar token no localStorage
         if (data.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          console.log("✅ Token salvo no localStorage");
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
         }
-
+        
         // Redirecionar para o dashboard
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate('/dashboard');
         }, 1000);
-
+        
         // Limpar formulário
         setFormData({
           name: "",
@@ -186,27 +127,14 @@ export function LoginSignupScreen() {
           password: "",
           confirmPassword: "",
         });
+        
       } else {
         // Erro da API
-        console.error("Erro da API:", data);
-        setMessage({ type: "error", text: data.error || "Erro desconhecido" });
+        setMessage({ type: 'error', text: data.error || 'Erro desconhecido' });
       }
     } catch (error) {
-      console.error("Erro na requisição:", error);
-      setConnectionError(true);
-
-      if (
-        error instanceof Error &&
-        error.name === "TypeError" &&
-        error.message.includes("fetch")
-      ) {
-        setMessage({
-          type: "error",
-          text: "Erro de conexão. Verifique se o servidor está rodando.",
-        });
-      } else {
-        setMessage({ type: "error", text: "Erro de conexão com o servidor" });
-      }
+      console.error('Erro na requisição:', error);
+      setMessage({ type: 'error', text: 'Erro de conexão com o servidor' });
     } finally {
       setLoading(false);
     }
@@ -305,58 +233,19 @@ export function LoginSignupScreen() {
               </p>
             </div>
 
-            {/* Status da conexão */}
-            <div className="mb-4 flex items-center justify-center">
-              <div
-                className={`flex items-center px-3 py-1 rounded-full text-xs ${
-                  connectionError
-                    ? "bg-red-500/20 text-red-300 border border-red-500/30"
-                    : "bg-green-500/20 text-green-300 border border-green-500/30"
-                }`}
-              >
-                {connectionError ? (
-                  <>
-                    <WifiOff className="w-3 h-3 mr-1" />
-                    Servidor offline
-                  </>
-                ) : (
-                  <>
-                    <Wifi className="w-3 h-3 mr-1" />
-                    Servidor online
-                  </>
-                )}
-              </div>
-            </div>
-
             {/* Mensagem de feedback */}
             {message.text && (
-              <div
-                className={`mb-6 p-4 rounded-lg flex items-center ${
-                  message.type === "error"
-                    ? "bg-red-500/20 border border-red-500/30 text-red-300"
-                    : "bg-green-500/20 border border-green-500/30 text-green-300"
-                }`}
-              >
-                {message.type === "error" ? (
+              <div className={`mb-6 p-4 rounded-lg flex items-center ${
+                message.type === 'error' 
+                  ? 'bg-red-500/20 border border-red-500/30 text-red-300' 
+                  : 'bg-green-500/20 border border-green-500/30 text-green-300'
+              }`}>
+                {message.type === 'error' ? (
                   <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
                 ) : (
                   <CheckCircle className="w-5 h-5 mr-2 flex-shrink-0" />
                 )}
-                <div className="flex-1">
-                  <span className="text-sm">{message.text}</span>
-                  {connectionError && (
-                    <div className="mt-2 text-xs opacity-75">
-                      Verifique se o servidor está rodando: <br />
-                      <code className="bg-black/20 px-1 rounded">
-                        npm start
-                      </code>{" "}
-                      ou{" "}
-                      <code className="bg-black/20 px-1 rounded">
-                        npm run dev
-                      </code>
-                    </div>
-                  )}
-                </div>
+                <span className="text-sm">{message.text}</span>
               </div>
             )}
 
@@ -365,7 +254,7 @@ export function LoginSignupScreen() {
               <button
                 onClick={() => {
                   setIsLogin(true);
-                  setMessage({ type: "", text: "" });
+                  setMessage({ type: '', text: '' });
                 }}
                 className={`flex-1 py-3 px-4 rounded-md font-medium transition-all duration-200 ${
                   isLogin
@@ -378,7 +267,7 @@ export function LoginSignupScreen() {
               <button
                 onClick={() => {
                   setIsLogin(false);
-                  setMessage({ type: "", text: "" });
+                  setMessage({ type: '', text: '' });
                 }}
                 className={`flex-1 py-3 px-4 rounded-md font-medium transition-all duration-200 ${
                   !isLogin
@@ -489,7 +378,7 @@ export function LoginSignupScreen() {
 
             {/* Login Social */}
             <div className="grid grid-cols-2 gap-3">
-              <button
+              <button 
                 disabled={loading}
                 className="bg-white text-gray-800 py-3 px-4 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 flex items-center justify-center disabled:opacity-50"
               >
@@ -514,7 +403,7 @@ export function LoginSignupScreen() {
                 Google
               </button>
 
-              <button
+              <button 
                 disabled={loading}
                 className="bg-[#1877F2] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#166FE5] transition-all duration-200 flex items-center justify-center disabled:opacity-50"
               >
