@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, User, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,11 +22,15 @@ import { Label } from "@/components/ui/label";
 
 interface UserProfileDropdownProps {
   userName: string;
+  onLogout?: () => void;
 }
 
-export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDropdownProps) => {
+// URL base da API
+const API_BASE_URL = "http://localhost:3001";
+
+export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: UserProfileDropdownProps) => {
   const [userName, setUserName] = useState(initialUserName);
-  const [email, setEmail] = useState("usuario@exemplo.com");
+  const [email, setEmail] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [tempUserName, setTempUserName] = useState(userName);
@@ -34,6 +38,51 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Carregar dados do usuário do localStorage ou da API
+  useEffect(() => {
+    const loadUserData = async () => {
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+      
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          setUserName(user.name || initialUserName);
+          setEmail(user.email || "");
+          setTempUserName(user.name || initialUserName);
+          setTempEmail(user.email || "");
+        } catch (error) {
+          console.error('Erro ao carregar dados do usuário:', error);
+        }
+      }
+
+      // Opcionalmente, buscar dados atualizados da API
+      if (token) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/profile`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setUserName(data.user.name);
+            setEmail(data.user.email);
+            setTempUserName(data.user.name);
+            setTempEmail(data.user.email);
+          }
+        } catch (error) {
+          console.error('Erro ao buscar perfil da API:', error);
+        }
+      }
+    };
+
+    loadUserData();
+  }, [initialUserName]);
 
   const initials = userName
     .split(" ")
@@ -41,15 +90,37 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
     .join("")
     .slice(0, 2);
 
-  const handleSaveProfile = () => {
-    setUserName(tempUserName);
-    setEmail(tempEmail);
-    setIsEditingProfile(false);
-    // Aqui você pode adicionar a lógica para salvar no backend
-    console.log("Perfil atualizado:", { nome: tempUserName, email: tempEmail });
+  const handleSaveProfile = async () => {
+    setIsLoading(true);
+    
+    try {
+      // Aqui você pode implementar a chamada para atualizar o perfil na API
+      // Por enquanto, vamos apenas atualizar o localStorage
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        const updatedUser = {
+          ...user,
+          name: tempUserName,
+          email: tempEmail
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+
+      setUserName(tempUserName);
+      setEmail(tempEmail);
+      setIsEditingProfile(false);
+      
+      console.log("Perfil atualizado:", { nome: tempUserName, email: tempEmail });
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      alert('Erro ao atualizar perfil. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
       alert("As senhas não coincidem!");
       return;
@@ -59,19 +130,77 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
       return;
     }
 
-    // Aqui você pode adicionar a lógica para alterar a senha no backend
-    console.log("Senha alterada com sucesso");
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setIsChangingPassword(false);
-    alert("Senha alterada com sucesso!");
+    setIsLoading(true);
+
+    try {
+      
+      // Aqui você pode implementar a chamada para alterar a senha na API
+      // Por enquanto, vamos simular o processo
+      
+      console.log("Senha alterada com sucesso");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setIsChangingPassword(false);
+      alert("Senha alterada com sucesso!");
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      alert('Erro ao alterar senha. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleLogout = () => {
-    // Aqui você pode adicionar a lógica de logout
-    console.log("Usuário deslogado");
-    alert("Você foi desconectado!");
+  const handleLogout = async () => {
+    setIsLoading(true);
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        // Chamar a API de logout
+        const response = await fetch(`${API_BASE_URL}/api/logout`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Logout realizado com sucesso:', data.message);
+        } else {
+          console.error('Erro ao fazer logout:', await response.json());
+        }
+      }
+
+      // Limpar o localStorage
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      // Chamar a função de logout passada como prop
+      if (onLogout) {
+        onLogout();
+      } else {
+        // Fallback: redirecionar diretamente
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('Erro de conexão ao fazer logout:', error);
+      
+      // Mesmo com erro, limpar o localStorage e fazer logout
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      if (onLogout) {
+        onLogout();
+      } else {
+        window.location.href = '/login';
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -80,6 +209,7 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
         <Button
           variant="ghost"
           className="relative p-1 rounded-xl hover:bg-white/10 transition-all duration-300 group"
+          disabled={isLoading}
         >
           <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 shadow-lg">
             <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
@@ -105,7 +235,9 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
               <p className="text-sm font-semibold text-white truncate">
                 {userName}
               </p>
-              <p className="text-xs text-gray-300">Estudante</p>
+              <p className="text-xs text-gray-300 truncate">
+                {email || "Estudante"}
+              </p>
             </div>
           </div>
         </DropdownMenuLabel>
@@ -141,6 +273,7 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
                   value={tempUserName}
                   onChange={(e) => setTempUserName(e.target.value)}
                   className="col-span-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  disabled={isLoading}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -153,6 +286,7 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
                   value={tempEmail}
                   onChange={(e) => setTempEmail(e.target.value)}
                   className="col-span-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -161,14 +295,16 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
                 variant="outline"
                 onClick={() => setIsEditingProfile(false)}
                 className="border-white/20 text-gray-300 hover:text-white hover:bg-white/10"
+                disabled={isLoading}
               >
                 Cancelar
               </Button>
               <Button
                 onClick={handleSaveProfile}
                 className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                disabled={isLoading}
               >
-                Salvar
+                {isLoading ? "Salvando..." : "Salvar"}
               </Button>
             </div>
           </DialogContent>
@@ -203,6 +339,7 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   className="col-span-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  disabled={isLoading}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -215,6 +352,7 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   className="col-span-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  disabled={isLoading}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -227,6 +365,7 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="col-span-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -240,14 +379,16 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
                   setConfirmPassword("");
                 }}
                 className="border-white/20 text-gray-300 hover:text-white hover:bg-white/10"
+                disabled={isLoading}
               >
                 Cancelar
               </Button>
               <Button
                 onClick={handleChangePassword}
                 className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                disabled={isLoading}
               >
-                Alterar Senha
+                {isLoading ? "Alterando..." : "Alterar Senha"}
               </Button>
             </div>
           </DialogContent>
@@ -258,9 +399,10 @@ export const UserProfileDropdown = ({ userName: initialUserName }: UserProfileDr
         <DropdownMenuItem
           className="text-red-300 hover:text-red-400 focus:bg-red-500/10 transition-colors cursor-pointer"
           onClick={handleLogout}
+          disabled={isLoading}
         >
           <LogOut className="w-4 h-4 mr-3" />
-          <span>Sair</span>
+          <span>{isLoading ? "Saindo..." : "Sair"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

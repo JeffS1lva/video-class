@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { VideoControls } from "./VideoControls";
 import { Clock, Eye, BookOpen } from "lucide-react";
-import type { VideoLesson } from "../types/interface";
+import type { VideoLesson } from "@/componentes/types/interface";
 
 import React, { useState, useRef, useEffect } from "react";
 

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { LessonItem } from "../Player/LessonItem";
-import type { Module, VideoLesson } from "../types/interface";
+import type { Module, VideoLesson } from "@/componentes/types/interface";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ChevronDown, ChevronRight } from "lucide-react";

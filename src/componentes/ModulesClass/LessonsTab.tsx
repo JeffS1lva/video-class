@@ -1,4 +1,4 @@
-import type { Module, VideoLesson } from "../types/interface";
+import type { Module, VideoLesson } from "@/componentes/types/interface";
 import { ModuleComponent } from "./Modules";
 
 export const LessonsTab = ({

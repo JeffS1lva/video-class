@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Comment } from "../types/interface";
+import type { Comment } from "@/componentes/types/interface";
 
 export const CommentComponent = ({ comment }: { comment: Comment }) => {
   return (
@@ -14,7 +14,9 @@ export const CommentComponent = ({ comment }: { comment: Comment }) => {
         <Card className="bg-white/10 border-white/20">
           <CardContent className="p-3">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-medium text-white ">{comment.user}</span>
+              <span className="text-xs font-medium text-white ">
+                {comment.user}
+              </span>
               <span className="text-xs text-gray-400">
                 {comment.timestamp.toLocaleTimeString()}
               </span>

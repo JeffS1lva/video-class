@@ -1,32 +1,32 @@
 import { Card } from "@/components/ui/card";
-import { ChatTab } from "../ModulesClass/Chat/ChatTab";
-import { LessonsTab } from "../ModulesClass/LessonsTab";
-import { TabHeader } from "../ModulesClass/TabHeader";
+import { ChatTab } from "@/componentes/ModulesClass/Chat/ChatTab";
+import { LessonsTab } from "@/componentes/ModulesClass/LessonsTab";
+import { TabHeader } from "@/componentes/ModulesClass/TabHeader";
 import type { Module, VideoLesson, Comment } from "../types/interface";
 
-export const Sidebar = ({ 
-  activeTab, 
-  modules, 
-  currentLesson, 
-  expandedModules, 
-  completedLessons, 
-  comments, 
-  newComment, 
-  onTabChange, 
-  onToggleModule, 
-  onSelectLesson, 
-  getModuleProgress, 
-  onNewCommentChange, 
-  onAddComment 
+export const Sidebar = ({
+  activeTab,
+  modules,
+  currentLesson,
+  expandedModules,
+  completedLessons,
+  comments,
+  newComment,
+  onTabChange,
+  onToggleModule,
+  onSelectLesson,
+  getModuleProgress,
+  onNewCommentChange,
+  onAddComment,
 }: {
-  activeTab: 'lessons' | 'chat';
+  activeTab: "lessons" | "chat";
   modules: Module[];
   currentLesson: VideoLesson;
   expandedModules: Set<number>;
   completedLessons: Set<number>;
   comments: Comment[];
   newComment: string;
-  onTabChange: (tab: 'lessons' | 'chat') => void;
+  onTabChange: (tab: "lessons" | "chat") => void;
   onToggleModule: (moduleId: number) => void;
   onSelectLesson: (lesson: VideoLesson) => void;
   getModuleProgress: (module: Module) => number;
@@ -39,10 +39,10 @@ export const Sidebar = ({
       <div className="flex-shrink-0">
         <TabHeader activeTab={activeTab} onTabChange={onTabChange} />
       </div>
-      
+
       {/* Conteúdo das Tabs - Agora ocupa toda altura restante */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        {activeTab === 'lessons' && (
+        {activeTab === "lessons" && (
           <LessonsTab
             modules={modules}
             currentLesson={currentLesson}
@@ -54,7 +54,7 @@ export const Sidebar = ({
           />
         )}
 
-        {activeTab === 'chat' && (
+        {activeTab === "chat" && (
           <ChatTab
             comments={comments}
             newComment={newComment}
