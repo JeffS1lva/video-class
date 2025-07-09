@@ -159,7 +159,7 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
       
       if (token) {
         // Chamar a API de logout
-        const response = await fetch(`${API_BASE_URL}/api/logout`, {
+        const response = await fetch(`${API_BASE_URL}/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
