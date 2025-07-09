@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 
 interface UserProfileDropdownProps {
   userName: string;
@@ -29,6 +30,7 @@ interface UserProfileDropdownProps {
 const API_BASE_URL = "https://video-class-backend-production.up.railway.app/api"
 
 export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: UserProfileDropdownProps) => {
+  const navigate = useNavigate();
   const [userName, setUserName] = useState(initialUserName);
   const [email, setEmail] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -39,6 +41,7 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
 
   // Carregar dados do usuário do localStorage ou da API
   useEffect(() => {
@@ -184,7 +187,7 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
         onLogout();
       } else {
         // Fallback: redirecionar diretamente
-        window.location.href = '/login';
+        navigate("/login");
       }
     } catch (error) {
       console.error('Erro de conexão ao fazer logout:', error);
