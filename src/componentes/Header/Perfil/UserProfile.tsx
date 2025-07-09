@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, User, Key } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LogOut, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
+import { EditProfileDialog } from "./EditProfileDialog";
 
 interface UserProfileDropdownProps {
   userName: string;
@@ -33,15 +34,12 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
   const navigate = useNavigate();
   const [userName, setUserName] = useState(initialUserName);
   const [email, setEmail] = useState("");
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [tempUserName, setTempUserName] = useState(userName);
-  const [tempEmail, setTempEmail] = useState(email);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
 
   // Carregar dados do usuário do localStorage ou da API
   useEffect(() => {
@@ -54,8 +52,7 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
           const user = JSON.parse(userData);
           setUserName(user.name || initialUserName);
           setEmail(user.email || "");
-          setTempUserName(user.name || initialUserName);
-          setTempEmail(user.email || "");
+          setProfileImage(user.profileImage);
         } catch (error) {
           console.error('Erro ao carregar dados do usuário:', error);
         }
@@ -75,8 +72,7 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
             const data = await response.json();
             setUserName(data.user.name);
             setEmail(data.user.email);
-            setTempUserName(data.user.name);
-            setTempEmail(data.user.email);
+            setProfileImage(data.user.profileImage);
           }
         } catch (error) {
           console.error('Erro ao buscar perfil da API:', error);
@@ -93,34 +89,11 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
     .join("")
     .slice(0, 2);
 
-  const handleSaveProfile = async () => {
-    setIsLoading(true);
-    
-    try {
-      // Aqui você pode implementar a chamada para atualizar o perfil na API
-      // Por enquanto, vamos apenas atualizar o localStorage
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        const user = JSON.parse(userData);
-        const updatedUser = {
-          ...user,
-          name: tempUserName,
-          email: tempEmail
-        };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-      }
-
-      setUserName(tempUserName);
-      setEmail(tempEmail);
-      setIsEditingProfile(false);
-      
-      console.log("Perfil atualizado:", { nome: tempUserName, email: tempEmail });
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      alert('Erro ao atualizar perfil. Tente novamente.');
-    } finally {
-      setIsLoading(false);
-    }
+  // Função chamada pelo EditProfileDialog quando o perfil é atualizado
+  const handleProfileUpdate = (newUserName: string, newEmail: string, newProfileImage?: string) => {
+    setUserName(newUserName);
+    setEmail(newEmail);
+    setProfileImage(newProfileImage);
   };
 
   const handleChangePassword = async () => {
@@ -136,7 +109,6 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
     setIsLoading(true);
 
     try {
-      
       // Aqui você pode implementar a chamada para alterar a senha na API
       // Por enquanto, vamos simular o processo
       
@@ -215,9 +187,13 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
           disabled={isLoading}
         >
           <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 shadow-lg">
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
-              {initials}
-            </AvatarFallback>
+            {profileImage ? (
+              <AvatarImage src={profileImage} alt="Profile" className="object-cover" />
+            ) : (
+              <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
+                {initials}
+              </AvatarFallback>
+            )}
           </Avatar>
           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-black/50 shadow-sm" />
         </Button>
@@ -230,9 +206,13 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
         <DropdownMenuLabel className="pb-2">
           <div className="flex items-center space-x-3">
             <Avatar className="h-10 w-10">
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white font-bold">
-                {initials}
-              </AvatarFallback>
+              {profileImage ? (
+                <AvatarImage src={profileImage} alt="Profile" className="object-cover" />
+              ) : (
+                <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white font-bold">
+                  {initials}
+                </AvatarFallback>
+              )}
             </Avatar>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-white truncate">
@@ -246,72 +226,13 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-white/10" />
 
-        {/* Botão Editar Perfil */}
-        <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
-          <DialogTrigger asChild>
-            <DropdownMenuItem
-              className="text-gray-200 hover:text-white focus:bg-white/10 transition-colors cursor-pointer"
-              onSelect={(e) => {
-                e.preventDefault();
-                setTempUserName(userName);
-                setTempEmail(email);
-                setIsEditingProfile(true);
-              }}
-            >
-              <User className="w-4 h-4 mr-3" />
-              <span>Editar Perfil</span>
-            </DropdownMenuItem>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-black/95 backdrop-blur-xl border-white/10 text-white">
-            <DialogHeader>
-              <DialogTitle className="text-white">Editar Perfil</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right text-gray-300">
-                  Nome
-                </Label>
-                <Input
-                  id="name"
-                  value={tempUserName}
-                  onChange={(e) => setTempUserName(e.target.value)}
-                  className="col-span-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right text-gray-300">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={tempEmail}
-                  onChange={(e) => setTempEmail(e.target.value)}
-                  className="col-span-3 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsEditingProfile(false)}
-                className="border-white/20 text-gray-300 hover:text-white hover:bg-white/10"
-                disabled={isLoading}
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={handleSaveProfile}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-                disabled={isLoading}
-              >
-                {isLoading ? "Salvando..." : "Salvar"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        {/* Componente de Editar Perfil */}
+        <EditProfileDialog
+          userName={userName}
+          email={email}
+          profileImage={profileImage}
+          onProfileUpdate={handleProfileUpdate}
+        />
 
         {/* Botão Alterar Senha */}
         <Dialog open={isChangingPassword} onOpenChange={setIsChangingPassword}>
