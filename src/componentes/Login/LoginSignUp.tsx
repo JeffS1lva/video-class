@@ -28,7 +28,7 @@ export function LoginSignupScreen() {
   });
 
   // URL da sua API - ajuste conforme necessário
-  const API_URL = '/api'; 
+  const API_URL = 'https://video-class-backend-production.up.railway.app';
 
   const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
     setFormData({
