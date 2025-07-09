@@ -28,7 +28,7 @@ export function LoginSignupScreen() {
   });
 
   // URL da sua API - ajuste conforme necessário
-  const API_URL = 'http://localhost:3001/api';
+  const API_URL = '/api'; 
 
   const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
     setFormData({
