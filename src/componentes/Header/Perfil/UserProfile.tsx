@@ -26,7 +26,7 @@ interface UserProfileDropdownProps {
 }
 
 // URL base da API
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = "https://video-class-backend-production.up.railway.app/api";
 
 export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: UserProfileDropdownProps) => {
   const [userName, setUserName] = useState(initialUserName);
@@ -61,7 +61,7 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
       // Opcionalmente, buscar dados atualizados da API
       if (token) {
         try {
-          const response = await fetch(`${API_BASE_URL}/api/profile`, {
+          const response = await fetch(`${API_BASE_URL}/profile`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
