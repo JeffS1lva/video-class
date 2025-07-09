@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       if (token && user) {
         // Verificar se o token ainda é válido fazendo uma chamada para o perfil
         try {
-          const response = await fetch(`${API_BASE_URL}/api/profile`, {
+          const response = await fetch(`${API_BASE_URL}/profile`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -80,7 +80,7 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
       if (token && user) {
         // Verificar se o token ainda é válido
         try {
-          const response = await fetch(`${API_BASE_URL}/api/profile`, {
+          const response = await fetch(`${API_BASE_URL}/profile`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
