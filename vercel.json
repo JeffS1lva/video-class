@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://video-class-backend-production.up.railway.app/api/$1"
+    }
+  ]
+}
