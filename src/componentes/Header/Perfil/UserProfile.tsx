@@ -26,7 +26,11 @@ interface UserProfileDropdownProps {
 }
 
 // URL base da API
-const API_BASE_URL = "https://video-class-backend-production.up.railway.app/api";
+const API_BASE_URL =
+  import.meta.env.MODE === "production"
+    ? "https://video-class-backend-production.up.railway.app/api"
+    : "/api";
+
 
 export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: UserProfileDropdownProps) => {
   const [userName, setUserName] = useState(initialUserName);
