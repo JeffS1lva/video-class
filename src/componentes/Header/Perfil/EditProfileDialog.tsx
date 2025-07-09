@@ -191,7 +191,7 @@ export const EditProfileDialog = ({
     try {
       const token = getAuthToken();
       
-      const data = await makeApiRequest(`${API_BASE_URL}/profile-image`, {
+      await makeApiRequest(`${API_BASE_URL}/profile-image`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
