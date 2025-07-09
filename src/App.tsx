@@ -9,7 +9,7 @@ import { LoginSignupScreen } from "./componentes/Login/LoginSignUp";
 import VideoLearningPlatform from "./componentes/VideoLearningPlatform";
 
 // URL base da API
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = "https://video-class-backend-production.up.railway.app/api";
 
 // Componente para proteger rotas autenticadas
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
