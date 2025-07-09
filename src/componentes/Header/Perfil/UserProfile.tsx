@@ -61,7 +61,7 @@ export const UserProfileDropdown = ({ userName: initialUserName, onLogout }: Use
       // Opcionalmente, buscar dados atualizados da API
       if (token) {
         try {
-          const response = await fetch(`${API_BASE_URL}/profile`, {
+          const response = await fetch(`${API_BASE_URL}/logout`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
