@@ -42,31 +42,54 @@ export const PlatformHeader = ({
 
   return (
     <header className="bg-black/20 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
-      <div className="mx-4 py-4">
+      <div className="mx-2 sm:mx-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           {/* Logo e Informações do Curso - Lado Esquerdo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg ring-1 ring-white/10">
-              <BookOpen className="w-5 h-5 text-white" />
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg ring-1 ring-white/10 flex-shrink-0">
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                 EduPlatform
               </h1>
-              <p className="text-sm text-gray-300 font-medium">{courseName}</p>
+              <p className="text-xs sm:text-sm text-gray-300 font-medium truncate">
+                {courseName}
+              </p>
             </div>
           </div>
 
           {/* Ações do Usuário - Lado Direito */}
-          <div className="flex items-center space-x-3">
-            {/* Badge de Progresso */}
+          <div className="flex items-center space-x-1 sm:space-x-3 flex-shrink-0">
+            {/* Badge de Progresso Original - Telas grandes (md+) */}
             <Badge
               variant="secondary"
-              className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-100 border-emerald-400/30 hover:from-emerald-500/30 hover:to-green-500/30 transition-all duration-300 px-3 py-1.5 font-semibold"
+              className="hidden md:flex bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-100 border-emerald-400/30 hover:from-emerald-500/30 hover:to-green-500/30 transition-all duration-300 px-2 sm:px-3 py-1 sm:py-1.5 font-semibold text-xs sm:text-sm"
             >
-              <Award className="w-4 h-4 mr-2 text-emerald-300" />
-              {completionRate}% Completo
+              <Award className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-emerald-300" />
+              <span className="hidden lg:inline">{completionRate}% Completo</span>
+              <span className="lg:hidden">{completionRate}%</span>
             </Badge>
+
+            {/* Progresso Compacto para telas pequenas (sm) */}
+            <div className="hidden sm:flex md:hidden items-center space-x-1 bg-white/5 backdrop-blur-sm rounded-lg px-2 py-1 border border-white/10">
+              <Award className="w-3 h-3 text-emerald-300" />
+              <span className="text-xs font-semibold text-white">
+                {completionRate}%
+              </span>
+            </div>
+
+            {/* Progresso Mínimo para mobile (xs) - OCULTO */}
+            <div className="hidden">
+              <div className="w-6 h-6 bg-white/10 rounded-full flex items-center justify-center border border-white/20">
+                <Award className="w-3 h-3 text-emerald-300" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-white text-[8px]">
+                  {Math.round(completionRate / 10)}
+                </span>
+              </div>
+            </div>
 
             <NotificationPopover
               notifications={notifications}

@@ -33,8 +33,8 @@ const VideoLearningPlatform = () => {
           moduleId: 1
         },
         {
-          id: 2,
-          title: "Componentes e Props",
+          id: 3,
+          title: "Componentes e Props Avançados",
           duration: "22:15",
           videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
           description: "Entenda como criar e utilizar componentes reutilizáveis com props.",
@@ -50,7 +50,7 @@ const VideoLearningPlatform = () => {
       description: "Gerenciamento de estado avançado",
       lessons: [
         {
-          id: 3,
+          id: 4,
           title: "useState e useEffect",
           duration: "28:45",
           videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
@@ -60,7 +60,7 @@ const VideoLearningPlatform = () => {
           moduleId: 2
         },
         {
-          id: 4,
+          id: 5,
           title: "Hooks Customizados",
           duration: "18:20",
           videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
@@ -77,7 +77,7 @@ const VideoLearningPlatform = () => {
       description: "Navegação entre páginas",
       lessons: [
         {
-          id: 5,
+          id: 6,
           title: "React Router Básico",
           duration: "25:10",
           videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
@@ -114,6 +114,7 @@ const VideoLearningPlatform = () => {
   const [completedLessons, setCompletedLessons] = useState<Set<number>>(new Set());
   const [activeTab, setActiveTab] = useState<'lessons' | 'chat'>('lessons');
   const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
+  const [mobileView, setMobileView] = useState<'player' | 'content'>('player');
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -162,6 +163,10 @@ const VideoLearningPlatform = () => {
       setCurrentLesson(lesson);
       setCurrentTime(0);
       setIsPlaying(false);
+      // Em mobile, volta para o player quando seleciona uma aula
+      if (window.innerWidth < 1024) {
+        setMobileView('player');
+      }
     }
   };
 
@@ -230,16 +235,14 @@ const VideoLearningPlatform = () => {
 
   // Render principal
   return (
-    <div className="h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
-      {/* Estilos CSS personalizados para scroll invisível */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
+      {/* Estilos CSS personalizados */}
       <style>{`
         .invisible-scrollbar {
-          /* Firefox */
           scrollbar-width: none;
           -ms-overflow-style: none;
         }
         
-        /* Webkit browsers (Chrome, Safari, Edge) */
         .invisible-scrollbar::-webkit-scrollbar {
           width: 0px;
           height: 0px;
@@ -258,7 +261,6 @@ const VideoLearningPlatform = () => {
           background: transparent;
         }
         
-        /* Efeito de fade nas bordas durante scroll */
         .scroll-fade-container {
           position: relative;
         }
@@ -270,7 +272,7 @@ const VideoLearningPlatform = () => {
           left: 0;
           right: 0;
           height: 20px;
-          background: linear-gradient(180deg,  0%, transparent 100%);
+          background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, transparent 100%);
           pointer-events: none;
           z-index: 10;
           opacity: 0;
@@ -284,7 +286,7 @@ const VideoLearningPlatform = () => {
           left: 0;
           right: 0;
           height: 20px;
-          background: linear-gradient(0deg,  0%, transparent 100%);
+          background: linear-gradient(0deg, rgba(15, 23, 42, 0.8) 0%, transparent 100%);
           pointer-events: none;
           z-index: 10;
           opacity: 0;
@@ -295,55 +297,213 @@ const VideoLearningPlatform = () => {
         .scroll-fade-container.scrolled::after {
           opacity: 1;
         }
+
+        .mobile-tab-bar {
+          backdrop-filter: blur(10px);
+          background: rgba(15, 23, 42, 0.95);
+          border-top: 1px solid rgba(147, 51, 234, 0.3);
+        }
+
+        .mobile-tab-button {
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .mobile-tab-button.active {
+          background: rgba(147, 51, 234, 0.2);
+          border-radius: 12px;
+        }
+
+        .mobile-tab-button.active::before {
+          content: '';
+          position: absolute;
+          top: -1px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 32px;
+          height: 3px;
+          background: linear-gradient(90deg, #8b5cf6, #a855f7);
+          border-radius: 0 0 6px 6px;
+        }
+
+        .mobile-content-area {
+          background: rgba(15, 23, 42, 0.95);
+          backdrop-filter: blur(10px);
+        }
+
+        .mobile-player-container {
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(88, 28, 135, 0.1) 100%);
+        }
+
+        @media (max-width: 1023px) {
+          .mobile-layout {
+            height: calc(100vh - 80px);
+          }
+        }
       `}</style>
 
       {/* Header da Plataforma */}
       <PlatformHeader completionRate={completionRate} />
 
-      {/* Container Principal com Layout Flex - altura fixa */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* Container Principal com Layout Responsivo */}
+      <div className="flex-1 overflow-hidden">
+        {/* Layout Desktop (lg+) - Flex horizontal */}
+        <div className="hidden lg:flex h-full">
+          {/* Seção do Player de Vídeo */}
+          <div className="flex-1 relative">
+            <div
+              ref={scrollContainerRef}
+              className="invisible-scrollbar scroll-fade-container h-full overflow-y-auto p-5"
+              onScroll={handleScroll}
+            >
+              <VideoPlayer
+                currentLesson={currentLesson}
+                videoRef={videoRef}
+                isPlaying={isPlaying}
+                currentTime={currentTime}
+                duration={duration}
+                progress={progress}
+                onPlayPause={handlePlayPause}
+                onSeek={handleSeek}
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
+                onVideoEnd={handleVideoEnd}
+                formatTime={formatTime}
+              />
+            </div>
+          </div>
 
-        {/* Seção do Player de Vídeo - Ocupa a maior parte da tela com scroll personalizado */}
-        <div className="flex-1 relative">
-          <div
-            ref={scrollContainerRef}
-            className="invisible-scrollbar scroll-fade-container h-full overflow-y-auto p-5"
-            onScroll={handleScroll}
-          >
-            <VideoPlayer
+          {/* Seção da Sidebar */}
+          <div className="w-2/9 flex-shrink-0 p-6 pl-3 flex flex-col h-full">
+            <Sidebar
+              activeTab={activeTab}
+              modules={modules}
               currentLesson={currentLesson}
-              videoRef={videoRef}
-              isPlaying={isPlaying}
-              currentTime={currentTime}
-              duration={duration}
-              progress={progress}
-              onPlayPause={handlePlayPause}
-              onSeek={handleSeek}
-              onTimeUpdate={handleTimeUpdate}
-              onLoadedMetadata={handleLoadedMetadata}
-              onVideoEnd={handleVideoEnd}
-              formatTime={formatTime}
+              expandedModules={expandedModules}
+              completedLessons={completedLessons}
+              comments={comments}
+              newComment={newComment}
+              onTabChange={setActiveTab}
+              onToggleModule={toggleModule}
+              onSelectLesson={selectLesson}
+              getModuleProgress={getModuleProgress}
+              onNewCommentChange={setNewComment}
+              onAddComment={addComment}
             />
           </div>
         </div>
 
-        {/* Seção da Sidebar - Largura fixa à direita, altura fixa sem scroll */}
-        <div className="w-2/9 flex-shrink-0 p-6 pl-3 flex flex-col h-full">
-          <Sidebar
-            activeTab={activeTab}
-            modules={modules}
-            currentLesson={currentLesson}
-            expandedModules={expandedModules}
-            completedLessons={completedLessons}
-            comments={comments}
-            newComment={newComment}
-            onTabChange={setActiveTab}
-            onToggleModule={toggleModule}
-            onSelectLesson={selectLesson}
-            getModuleProgress={getModuleProgress}
-            onNewCommentChange={setNewComment}
-            onAddComment={addComment}
-          />
+        {/* Layout Mobile (lg e menores) - Layout com tabs na parte inferior */}
+        <div className="lg:hidden mobile-layout flex flex-col">
+          {/* Área de Conteúdo Principal */}
+          <div className="flex-1 relative overflow-hidden">
+            {/* Player de Vídeo */}
+            <div className={`absolute inset-0 transition-all duration-300 ease-in-out ${
+              mobileView === 'player' ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'
+            }`}>
+              <div className="mobile-player-container h-full">
+                <div
+                  ref={scrollContainerRef}
+                  className="invisible-scrollbar scroll-fade-container h-full overflow-y-auto p-4"
+                  onScroll={handleScroll}
+                >
+                  <VideoPlayer
+                    currentLesson={currentLesson}
+                    videoRef={videoRef}
+                    isPlaying={isPlaying}
+                    currentTime={currentTime}
+                    duration={duration}
+                    progress={progress}
+                    onPlayPause={handlePlayPause}
+                    onSeek={handleSeek}
+                    onTimeUpdate={handleTimeUpdate}
+                    onLoadedMetadata={handleLoadedMetadata}
+                    onVideoEnd={handleVideoEnd}
+                    formatTime={formatTime}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Conteúdo da Sidebar */}
+            <div className={`absolute inset-0 transition-all duration-300 ease-in-out ${
+              mobileView === 'content' ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
+            }`}>
+              <div className="mobile-content-area h-full p-4 overflow-y-auto">
+                <Sidebar
+                  activeTab={activeTab}
+                  modules={modules}
+                  currentLesson={currentLesson}
+                  expandedModules={expandedModules}
+                  completedLessons={completedLessons}
+                  comments={comments}
+                  newComment={newComment}
+                  onTabChange={setActiveTab}
+                  onToggleModule={toggleModule}
+                  onSelectLesson={selectLesson}
+                  getModuleProgress={getModuleProgress}
+                  onNewCommentChange={setNewComment}
+                  onAddComment={addComment}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Barra de Tabs Inferior Mobile */}
+          <div className="mobile-tab-bar px-4 py-3">
+            <div className="flex justify-around items-center max-w-sm mx-auto">
+              {/* Tab Player */}
+              <button
+                onClick={() => setMobileView('player')}
+                className={`mobile-tab-button flex flex-col items-center py-2 px-4 rounded-xl transition-all ${
+                  mobileView === 'player' ? 'active text-purple-300' : 'text-gray-400 hover:text-purple-400'
+                }`}
+              >
+                <div className="mb-1">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium">Player</span>
+              </button>
+
+              {/* Tab Aulas */}
+              <button
+                onClick={() => {
+                  setMobileView('content');
+                  setActiveTab('lessons');
+                }}
+                className={`mobile-tab-button flex flex-col items-center py-2 px-4 rounded-xl transition-all ${
+                  mobileView === 'content' && activeTab === 'lessons' ? 'active text-purple-300' : 'text-gray-400 hover:text-purple-400'
+                }`}
+              >
+                <div className="mb-1">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium">Aulas</span>
+              </button>
+
+              {/* Tab Chat */}
+              <button
+                onClick={() => {
+                  setMobileView('content');
+                  setActiveTab('chat');
+                }}
+                className={`mobile-tab-button flex flex-col items-center py-2 px-4 rounded-xl transition-all ${
+                  mobileView === 'content' && activeTab === 'chat' ? 'active text-purple-300' : 'text-gray-400 hover:text-purple-400'
+                }`}
+              >
+                <div className="mb-1">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium">Chat</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
