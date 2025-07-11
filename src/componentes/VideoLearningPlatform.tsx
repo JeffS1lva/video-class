@@ -329,262 +329,223 @@ const VideoLearningPlatform = () => {
           opacity: 1;
         }
 
-        /* Navegação Mobile Ultra-Moderna */
+        /* Navegação Mobile Otimizada */
         .mobile-nav-container {
-          position: relative;
-          padding: 0 20px 30px;
-          background: transparent;
-        }
-
-        .mobile-nav-wrapper {
-          position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .mobile-nav-content {
-          position: relative;
-          display: flex;
-          align-items: center;
-          background: rgba(0, 0, 0, 0.8);
+          background: rgba(15, 23, 42, 0.95);
           backdrop-filter: blur(20px);
-          border-radius: 32px;
-          padding: 6px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 
-            0 20px 60px rgba(0, 0, 0, 0.4),
-            0 8px 32px rgba(139, 92, 246, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-          overflow: hidden;
+          border-top: 1px solid rgba(139, 92, 246, 0.2);
+          padding: 8px 16px 12px;
+          position: relative;
+          z-index: 50;
         }
 
-        .mobile-nav-content::before {
+        .mobile-nav-container::before {
           content: '';
           position: absolute;
-          top: -50%;
-          left: -50%;
-          right: -50%;
-          bottom: -50%;
-          background: conic-gradient(
-            from 0deg,
-            transparent 0deg,
-            rgba(139, 92, 246, 0.1) 60deg,
-            rgba(168, 85, 247, 0.1) 120deg,
-            transparent 180deg,
-            rgba(147, 51, 234, 0.1) 240deg,
-            rgba(139, 92, 246, 0.1) 300deg,
-            transparent 360deg
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(139, 92, 246, 0.6) 30%, 
+            rgba(168, 85, 247, 0.8) 50%, 
+            rgba(139, 92, 246, 0.6) 70%, 
+            transparent 100%
           );
-          animation: rotate 8s linear infinite;
-          opacity: 0.6;
         }
 
-        @keyframes rotate {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        .mobile-nav-morphing-bg {
-          position: absolute;
-          top: 6px;
-          left: 6px;
-          width: 68px;
-          height: 46px;
-          background: linear-gradient(135deg, 
-            rgba(139, 92, 246, 0.8) 0%, 
-            rgba(168, 85, 247, 0.6) 100%);
-          border-radius: 26px;
-          transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-          box-shadow: 
-            0 8px 32px rgba(139, 92, 246, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        .mobile-nav-button {
-          position: relative;
-          z-index: 2;
+        .mobile-nav-tabs {
           display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 4px;
+          max-width: 100%;
+          margin: 0 auto;
+        }
+
+        .mobile-nav-tab {
+          flex: 1;
+          max-width: 100px;
+          display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
-          width: 68px;
-          height: 46px;
-          border-radius: 26px;
+          padding: 10px 8px;
+          border-radius: 16px;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           cursor: pointer;
+          position: relative;
           overflow: hidden;
+          background: transparent;
+          border: 1px solid transparent;
+          -webkit-tap-highlight-color: transparent;
+          user-select: none;
         }
 
-        .mobile-nav-button:hover {
-          transform: translateY(-2px);
+        .mobile-nav-tab:active {
+          transform: scale(0.95);
         }
 
-        .mobile-nav-button.active {
-          transform: translateY(-3px);
+        .mobile-nav-tab.active {
+          background: rgba(139, 92, 246, 0.15);
+          border-color: rgba(139, 92, 246, 0.3);
+          box-shadow: 
+            0 4px 20px rgba(139, 92, 246, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav-tab:not(.active):hover {
+          background: rgba(139, 92, 246, 0.08);
+          transform: translateY(-1px);
         }
 
         .mobile-nav-icon {
-          width: 22px;
-          height: 22px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          width: 24px;
+          height: 24px;
+          margin-bottom: 4px;
+          transition: all 0.3s ease;
           color: #94a3b8;
+          stroke-width: 2;
         }
 
-        .mobile-nav-button:hover .mobile-nav-icon {
+        .mobile-nav-tab.active .mobile-nav-icon {
+          color: #a855f7;
           transform: scale(1.1);
+        }
+
+        .mobile-nav-tab:not(.active):hover .mobile-nav-icon {
           color: #cbd5e1;
         }
 
-        .mobile-nav-button.active .mobile-nav-icon {
-          transform: scale(1.15);
-          color: #ffffff;
-          filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
-        }
-
         .mobile-nav-label {
-          position: absolute;
-          top: -32px;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 10px;
+          font-size: 11px;
           font-weight: 600;
-          letter-spacing: 0.5px;
-          text-transform: uppercase;
-          color: #ffffff;
-          background: rgba(0, 0, 0, 0.9);
-          padding: 4px 8px;
-          border-radius: 8px;
-          border: 1px solid rgba(139, 92, 246, 0.3);
-          backdrop-filter: blur(10px);
-          opacity: 0;
+          color: #94a3b8;
           transition: all 0.3s ease;
-          pointer-events: none;
-          white-space: nowrap;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+          text-align: center;
+          line-height: 1;
+          letter-spacing: 0.3px;
         }
 
-        .mobile-nav-button.active .mobile-nav-label {
-          opacity: 1;
-          transform: translateX(-50%) translateY(-4px);
+        .mobile-nav-tab.active .mobile-nav-label {
+          color: #a855f7;
         }
 
-        /* Animações do morphing background */
-        .mobile-nav-content[data-active="0"] .mobile-nav-morphing-bg {
-          transform: translateX(0);
+        .mobile-nav-tab:not(.active):hover .mobile-nav-label {
+          color: #cbd5e1;
         }
 
-        .mobile-nav-content[data-active="1"] .mobile-nav-morphing-bg {
-          transform: translateX(74px);
-        }
-
-        .mobile-nav-content[data-active="2"] .mobile-nav-morphing-bg {
-          transform: translateX(148px);
-        }
-
-        /* Efeitos de brilho */
-        .mobile-nav-shine {
+        /* Indicador de notificação */
+        .mobile-nav-badge {
           position: absolute;
-
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.1),
-            transparent
-          );
-          transition: left 0.5s ease;
-        }
-
-        .mobile-nav-button.active .mobile-nav-shine {
-          left: 100%;
-          
-        }
-
-        /* Partículas flutuantes */
-        .mobile-nav-particles {
-          position: absolute;
-          top: 0px;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          pointer-events: none;
-          overflow: hidden;
-          border-radius: 32px;
-        }
-
-        .mobile-nav-particle {
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          background: rgba(139, 92, 246, 0.6);
+          top: 6px;
+          right: 12px;
+          width: 6px;
+          height: 6px;
+          background: #ef4444;
           border-radius: 50%;
-          animation: float 4s ease-in-out infinite;
+          opacity: 0;
+          transform: scale(0);
+          transition: all 0.3s ease;
         }
 
-        .mobile-nav-particle:nth-child(1) {
-          left: 20%;
-          animation-delay: 0s;
+        .mobile-nav-tab.has-notification .mobile-nav-badge {
+          opacity: 1;
+          transform: scale(1);
         }
 
-        .mobile-nav-particle:nth-child(2) {
+        /* Animação de ripple effect */
+        .mobile-nav-tab::after {
+          content: '';
+          position: absolute;
+          top: 50%;
           left: 50%;
-          animation-delay: 1s;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: rgba(139, 92, 246, 0.3);
+          transform: translate(-50%, -50%);
+          transition: width 0.3s ease, height 0.3s ease;
         }
 
-        .mobile-nav-particle:nth-child(3) {
-          left: 80%;
-          animation-delay: 2s;
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(20px);
-            opacity: 0;
-          }
-          50% {
-            transform: translateY(-20px);
-            opacity: 1;
-          }
+        .mobile-nav-tab:active::after {
+          width: 80px;
+          height: 80px;
         }
 
         .mobile-content-area {
           background: rgba(15, 23, 42, 0.95);
           backdrop-filter: blur(10px);
-          
         }
 
         .mobile-player-container {
           background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(88, 28, 135, 0.1) 100%);
         }
 
+        /* Transições suaves para mudança de conteúdo */
+        .mobile-content-transition {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-content-enter {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        .mobile-content-enter-active {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .mobile-content-exit {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .mobile-content-exit-active {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+
         @media (max-width: 1023px) {
           .mobile-layout {
-            height: calc(100vh - 67px);
-
+            height: calc(100vh - 70px);
           }
         }
 
-        @media (max-width: 360px) {
-          .mobile-nav-content {
-            max-width: 340px;
-            padding: 6px;
+        /* Otimizações para telas pequenas */
+        @media (max-width: 380px) {
+          .mobile-nav-container {
+            padding: 6px 12px 8px;
           }
           
-          .mobile-nav-button {
-            padding: 10px 6px;
-            min-height: 52px;
+          .mobile-nav-tabs {
+            gap: 2px;
+          }
+          
+          .mobile-nav-tab {
+            max-width: 80px;
+            padding: 8px 6px;
           }
           
           .mobile-nav-icon {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
+            margin-bottom: 2px;
           }
           
           .mobile-nav-label {
             font-size: 10px;
+          }
+        }
+
+        /* Melhorias para acessibilidade */
+        @media (prefers-reduced-motion: reduce) {
+          .mobile-nav-tab,
+          .mobile-nav-icon,
+          .mobile-nav-label {
+            transition: none;
           }
         }
       `}</style>
@@ -648,7 +609,7 @@ const VideoLearningPlatform = () => {
           <div className="flex-1 relative overflow-hidden">
             {/* Player de Vídeo */}
             <div
-              className={`absolute inset-0 transition-all duration-300 ease-in-out ${
+              className={`absolute inset-0 mobile-content-transition ${
                 mobileView === "player"
                   ? "opacity-100 translate-x-0"
                   : "opacity-0 -translate-x-full"
@@ -682,7 +643,7 @@ const VideoLearningPlatform = () => {
 
             {/* Conteúdo da Sidebar */}
             <div
-              className={`absolute inset-0 transition-all duration-300 ease-in-out ${
+              className={`absolute inset-0 mobile-content-transition ${
                 mobileView === "content"
                   ? "opacity-100 translate-x-0"
                   : "opacity-0 translate-x-full"
@@ -708,115 +669,81 @@ const VideoLearningPlatform = () => {
             </div>
           </div>
 
-          {/* Navegação Mobile Ultra-Moderna */}
-          <div className="mobile-nav-container ">
-            <div className="mobile-nav-wrapper">
-              <div 
-                className="mobile-nav-content" 
-                data-active={
-                  mobileView === "player" ? "0" : 
-                  mobileView === "content" && activeTab === "lessons" ? "1" : "2"
-                }
+          {/* Navegação Mobile Otimizada */}
+          <div className="mobile-nav-container">
+            <div className="mobile-nav-tabs">
+              {/* Tab Player */}
+              <button
+                onClick={() => setMobileView("player")}
+                className={`mobile-nav-tab ${
+                  mobileView === "player" ? "active" : ""
+                }`}
               >
-                {/* Background morphing animado */}
-                <div className="mobile-nav-morphing-bg "></div>
-                
-                {/* Partículas flutuantes */}
-                <div className="mobile-nav-particles ">
-                  <div className="mobile-nav-particle"></div>
-                  <div className="mobile-nav-particle"></div>
-                  <div className="mobile-nav-particle"></div>
-                </div>
-
-                {/* Botão Player */}
-                <button
-                  onClick={() => setMobileView("player")}
-                  className={`mobile-nav-button ${
-                    mobileView === "player" ? "active" : ""
-                  }`}
+                <svg
+                  className="mobile-nav-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <div className="mobile-nav-shine"></div>
-                  <div className="mobile-nav-icon">
-                    <svg
-                      className="w-full h-full"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 12a9 9 0 11-6.219-8.56"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 12l2 2 4-4"
-                      />
-                    </svg>
-                  </div>
-                  <span className="mobile-nav-label">Player</span>
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span className="mobile-nav-label">Player</span>
+              </button>
 
-                {/* Botão Aulas */}
-                <button
-                  onClick={() => {
-                    setMobileView("content");
-                    setActiveTab("lessons");
-                  }}
-                  className={`mobile-nav-button ${
-                    mobileView === "content" && activeTab === "lessons" ? "active" : ""
-                  }`}
+              {/* Tab Aulas */}
+              <button
+                onClick={() => {
+                  setMobileView("content");
+                  setActiveTab("lessons");
+                }}
+                className={`mobile-nav-tab ${
+                  mobileView === "content" && activeTab === "lessons" ? "active" : ""
+                }`}
+              >
+                <svg
+                  className="mobile-nav-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <div className="mobile-nav-shine"></div>
-                  <div className="mobile-nav-icon">
-                    <svg
-                      className="w-full h-full"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                      />
-                    </svg>
-                  </div>
-                  <span className="mobile-nav-label">Aulas</span>
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+                <span className="mobile-nav-label">Aulas</span>
+              </button>
 
-                {/* Botão Chat */}
-                <button
-                  onClick={() => {
-                    setMobileView("content");
-                    setActiveTab("chat");
-                  }}
-                  className={`mobile-nav-button ${
-                    mobileView === "content" && activeTab === "chat" ? "active" : ""
-                  }`}
+              {/* Tab Chat */}
+              <button
+                onClick={() => {
+                  setMobileView("content");
+                  setActiveTab("chat");
+                }}
+                className={`mobile-nav-tab ${
+                  mobileView === "content" && activeTab === "chat" ? "active" : ""
+                } ${comments.length > 5 ? "has-notification" : ""}`}
+              >
+                <svg
+                  className="mobile-nav-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <div className="mobile-nav-shine"></div>
-                  <div className="mobile-nav-icon">
-                    <svg
-                      className="w-full h-full"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                      />
-                    </svg>
-                  </div>
-                  <span className="mobile-nav-label">Chat</span>
-                </button>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  />
+                </svg>
+                <span className="mobile-nav-label">Chat</span>
+                <div className="mobile-nav-badge"></div>
+              </button>
             </div>
           </div>
         </div>

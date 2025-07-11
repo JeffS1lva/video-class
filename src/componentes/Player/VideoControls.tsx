@@ -260,7 +260,7 @@ export const VideoControls = ({
             }`} />
             <span
               className={`absolute font-bold text-white/90 group-hover:text-white transition-colors duration-200 ${
-                isMobile ? 'text-xs top-' : 'text-xs top-4 sm:top-4.5'
+                isMobile ? 'text-xs top-3' : 'text-xs top-4 sm:top-4.5'
               }`}
               style={{ fontSize: isMobile ? "8px" : "10px" }}
             >
