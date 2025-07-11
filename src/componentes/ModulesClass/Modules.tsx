@@ -29,11 +29,7 @@ export const ModuleComponent = ({
   const isCompleted = moduleProgress === 100;
 
   // Calcula quantas aulas foram completadas neste módulo
-  const completedLessonsInModule = module.lessons.filter(
-    (lesson: VideoLesson) => completedLessons.has(lesson.id)
-  ).length;
   const totalLessons = module.lessons.length;
-  const progressPercentage = (completedLessonsInModule / totalLessons) * 100;
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(0);
