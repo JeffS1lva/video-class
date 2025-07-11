@@ -2,6 +2,8 @@
 // INTERFACES PRINCIPAIS
 // ========================================
 
+import type { ReactNode } from "react";
+
 export interface VideoLesson {
   id: number;
   title: string;
@@ -18,6 +20,8 @@ export interface VideoLesson {
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
   createdAt?: Date;
   updatedAt?: Date;
+  // moduleTitle is optional and computed dynamically
+  moduleTitle?: ReactNode;
 }
 
 export interface Module {
@@ -32,6 +36,7 @@ export interface Module {
   completionPercentage?: number;
   isLocked?: boolean;
   order?: number;
+  
 }
 
 // ========================================
