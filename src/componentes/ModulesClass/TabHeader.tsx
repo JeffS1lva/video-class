@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, PlayCircle } from "lucide-react";
-import React from "react";
 
 export const TabHeader = ({ 
   activeTab, 
